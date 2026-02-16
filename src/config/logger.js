@@ -55,10 +55,4 @@ const logger = winston.createLogger({
     transports
 });
 
-export const morganMiddleware = morgan("combined", {
-    stream: {
-        write: (message) => logger.http(message.trim())
-    }
-});
-
 export default logger;
