@@ -18,3 +18,4 @@ dist/
 build/
 .tmp/
 .cache/
+/generated/prisma
