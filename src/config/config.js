@@ -8,10 +8,14 @@ export const config = {
     saltRounds: process.env.BCRYPT_SALT_ROUNDS,
 
     rateLimit: {
-        globalWindow: Number(process.env.GLOBAL_RATE_LIMIT_WINDOW_MS),
-        globalMax: Number(process.env.GLOBAL_RATE_LIMIT_MAX),
-        authWindow: Number(process.env.AUTH_RATE_LIMIT_WINDOW_MS),
-        authMax: Number(process.env.AUTH_RATE_LIMIT_MAX),
+        global: {
+            windowMs: Number(process.env.GLOBAL_RATE_LIMIT_WINDOW_MS),
+            max: Number(process.env.GLOBAL_RATE_LIMIT_MAX)
+        },
+        auth: {
+            windowMs: Number(process.env.AUTH_RATE_LIMIT_WINDOW_MS),
+            max: Number(process.env.AUTH_RATE_LIMIT_MAX)
+        }
     },
 
     logger: {
