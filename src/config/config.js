@@ -5,7 +5,7 @@ export const config = {
     port: process.env.PORT,
     jwtSecret: process.env.JWT_SECRET,
     jwtExp: process.env.JWT_EXPIRES_IN,
-    saltRounds: process.env.BCRYPT_SALT_ROUNDS,
+    saltRounds: Number(process.env.BCRYPT_SALT_ROUNDS),
 
     rateLimit: {
         global: {
