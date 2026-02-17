@@ -4,7 +4,8 @@ import { config } from "./config/config.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { morganMiddleware } from "./middlewares/morganMiddleware.js";
 
-import authRoutes from "./modules/auth/auth.routes.js";
+import authRoutes from "./modules/auth/auth.route.js";
+import habitRoutes from "./modules/habits/habits.route.js";
 
 const app = express();
 app.use(express.json());
@@ -19,6 +20,7 @@ app.get("/health-check", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/habits", habitRoutes)
 
 app.use(errorHandler);
 
