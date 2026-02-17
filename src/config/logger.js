@@ -1,6 +1,5 @@
 import winston from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
-import morgan from "morgan";
 import { config } from "./config.js";
 
 const { combine, timestamp, printf, colorize, errors, json } = winston.format;
