@@ -51,13 +51,21 @@ export const checkHabitToday = async (habitId, userId) => {
 };
 
 export const getHabitStreak = async (habitId) => {
+    const habit = await prisma.habit.findFirst({
+        where: { id: habitId, userId }
+    });
+
+    if (!habit) {
+        throw new AppError({
+            message: "Habit not found",
+            statusCode: 404,
+            code: "HABIT_NOT_FOUND"
+        });
+    }
+
     const logs = await prisma.habitLog.findMany({
-        where: {
-            habitId
-        },
-        orderBy: {
-            date: "asc"
-        }
+        where: { habitId },
+        orderBy: { date: "desc" }
     });
 
     if (!logs.length) {
@@ -67,11 +75,14 @@ export const getHabitStreak = async (habitId) => {
     let streak = 0;
     let currentDay = todayStart();
 
+    const hasTodayLog = logs.some(log => isSameDay(log.date, currentDay));
+    if (!hasTodayLog) {
+        currentDay.setDate(currentDay.getDate() - 1);
+    }
+        
     for (const log of logs) {
         if (isSameDay(log.date, currentDay)) {
             streak++;
-
-            currentDay = new Date(currentDay);
             currentDay.setDate(currentDay.getDate() - 1);
         } else if (log.date < currentDay) {
             break;
