@@ -43,4 +43,6 @@ model HabitLog {
   date DateTime
   habitId Int
   habit Habit @relation(fields: [habitId], references: [id])
+
+  @@unique([habitId, date])
 }
