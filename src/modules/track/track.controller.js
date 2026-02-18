@@ -1,6 +1,6 @@
 import { AppError } from "../../utils/AppError.js";
 import { success } from "../../utils/response.js";
-import { checkHabitToday } from "./track.service";
+import { checkHabitToday } from "./track.service.js";
 
 export const checkHabitController = async (req, res, next) => {
     try {
