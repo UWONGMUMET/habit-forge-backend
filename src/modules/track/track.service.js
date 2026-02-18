@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { prisma } from "../../config/prisma.js";
 import { AppError } from "../../utils/AppError.js";
 import { todayStart, todayEnd, isSameDay } from "../../utils/date.js";
@@ -50,9 +51,9 @@ export const checkHabitToday = async (habitId, userId) => {
     });
 };
 
-export const getHabitStreak = async (habitId) => {
+export const getHabitStreak = async (habitId, userId) => {
     const habit = await prisma.habit.findFirst({
-        where: { id: habitId, userId }
+        where: { id: Number(habitId), userId }
     });
 
     if (!habit) {
@@ -64,32 +65,36 @@ export const getHabitStreak = async (habitId) => {
     }
 
     const logs = await prisma.habitLog.findMany({
-        where: { habitId },
+        where: { habitId: Number(habitId) },
         orderBy: { date: "desc" }
     });
 
-    if (!logs.length) {
-        return 0;
-    };
+    if (!logs.length) return { streak: 0 };
 
     let streak = 0;
-    let currentDay = todayStart();
+    let expectedDay = todayStart(); 
 
-    const hasTodayLog = logs.some(log => isSameDay(log.date, currentDay));
-    if (!hasTodayLog) {
-        currentDay.setDate(currentDay.getDate() - 1);
-    }
-        
     for (const log of logs) {
-        if (isSameDay(log.date, currentDay)) {
+        const logDay = dayjs(log.date).startOf("day");
+
+        if (logDay.isAfter(expectedDay)) continue;
+
+        if (logDay.isSame(expectedDay)) {
             streak++;
-            currentDay.setDate(currentDay.getDate() - 1);
-        } else if (log.date < currentDay) {
-            break;
+            expectedDay = expectedDay.subtract(1, "day");
+            continue;
         }
+
+        const yesterday = expectedDay.subtract(1, "day");
+        if (logDay.isSame(yesterday)) {
+            streak++;
+            expectedDay = yesterday;
+            continue;
+        }
+        break;
     }
 
-    return streak;
+    return { streak };
 };
 
 export const getHabitStats = async (habitId, userId) => {
